@@ -133,7 +133,8 @@ export const STR={
   pickPrefix:'Select',searchName:'Type a name to search…',addFirst:'Add data in Database first.',
   pdfSaved:'PDF saved.',pdfSavedShare:'PDF saved. Open WhatsApp and attach the file.',
   pdfFail:'Could not create PDF. You can save via Print.',
-  reportTitle:'Trip Log',reportSub:'Daily Report',poweredBy:'Powered by Cloud Craft BD',
+  mileage:'Mileage (km/L)',expectedFuel:'Expected fuel',givenFuel:'Fuel given',variance:'Fuel +/-',duration:'Duration',totalKm:'Total km',roundTrip:'Round trip route',updateBtn:'Update',totalDistance:'Total distance',
+  reportTitle:'Trip Log',reportSub:'Daily Report',poweredBy:'Powered by Data & Code',
   loading:'Loading Trip Log…',passengerBus:'Passenger Bus',transportMgmt:'Transport Management',cloudOk:'Lovable Cloud connected',
  },
 } as const;
