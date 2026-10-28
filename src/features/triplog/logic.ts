@@ -4,9 +4,33 @@ export const num=(n:number,lang:Lang='bn')=>n.toLocaleString(lang==='bn'?'bn-BD'
 export function today(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Dhaka',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
 export function nowTime(){return new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit'});}
 export function fuelMath(quantity:number,price:number,allowance:number){return {total:quantity*price,excess:quantity-allowance};}
+export function bnDigits(s:string){return s.replace(/[0-9]/g,d=>'০১২৩৪৫৬৭৮৯'[Number(d)]);}
+/** Bengali 12-hour colloquial time: ভোর ৪-৬:৫৯, সকাল ৭-১০:৫৯, দুপুর ১১-২:৫৯, বিকাল ৩-৫:৫৯, সন্ধ্যা ৬টা, রাত ৭টা-৩:৫৯. */
+export function bnTime(time:string,lang:Lang='bn'){
+ if(!time)return '';
+ const [h,m]=time.split(':').map(Number);
+ if(lang==='en')return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+ const period=h>=4&&h<7?'ভোর':h>=7&&h<11?'সকাল':h>=11&&h<15?'দুপুর':h>=15&&h<18?'বিকাল':h===18?'সন্ধ্যা':'রাত';
+ const h12=h%12===0?12:h%12;
+ return `${period} ${bnDigits(String(h12))}:${bnDigits(String(m).padStart(2,'0'))}`;
+}
+export function durationLabel(upTime:string,downTime:string,lang:Lang='bn'){
+ const [uh,um]=upTime.split(':').map(Number),[dh,dm]=downTime.split(':').map(Number);
+ let m=dh*60+dm-(uh*60+um);if(m<0)m+=1440;
+ if(lang==='en')return `${Math.floor(m/60)}h ${m%60}m`;
+ return `${bnDigits(String(Math.floor(m/60)))} ঘ ${bnDigits(String(m%60))} মি`;
+}
+/** Mileage-based expected fuel: total km ÷ mileage (km/litre). */
+export function expectedFuel(km:number,mileage:number){return mileage>0?km/mileage:0;}
+export const round1=(x:number)=>Math.round(x*10)/10;
+/** Variance = fuel given − expected fuel. Over → red '+', equal → blue '০', under → green '−'. */
+export function variance(given:number,expected:number){
+ const diff=round1(given-expected);
+ return {diff,cls:diff>0?'var-over':diff<0?'var-under':'var-even',sign:diff>0?'+':diff<0?'−':''};
+}
 export function ordinalLabel(n:number,lang:Lang='bn'){if(n===1)return '';if(lang==='en')return n===2?'2nd trip':n===3?'3rd trip':`${n}th trip`;return n===2?'২য় ট্রিপ':n===3?'তৃতীয় ট্রিপ':`${bn(n)}তম ট্রিপ`;}
 export function rankPeople(logs:{supervisor_id:string;driver_id:string}[],key:'supervisor_id'|'driver_id'){const counts=new Map<string,number>();logs.forEach(l=>counts.set(l[key],(counts.get(l[key])??0)+1));return [...counts].map(([id,count])=>({id,count})).sort((a,b)=>b.count-a.count);}
-export function pageHead(title:string){const description=`ট্রিপ লগ — যাত্রীবাহী বাসের ${title}। Powered by Cloud Craft BD.`;return {meta:[{title:`${title} | ট্রিপ লগ`},{name:'description',content:description},{property:'og:title',content:`${title} | ট্রিপ লগ`},{property:'og:description',content:description},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]};}
+export function pageHead(title:string){const description=`Trip & Fuel Logbook — যাত্রীবাহী বাসের ${title}। Powered by Data & Code.`;return {meta:[{title:`${title} | Trip & Fuel Logbook`},{name:'description',content:description},{property:'og:title',content:`${title} | Trip & Fuel Logbook`},{property:'og:description',content:description},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]};}
 
 export const STR={
  bn:{
