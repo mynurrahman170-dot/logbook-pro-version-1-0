@@ -81,7 +81,8 @@ export const STR={
   pickPrefix:'নির্বাচন করুন',searchName:'নাম লিখে খুঁজুন…',addFirst:'ডাটাবেইজে আগে তথ্য যুক্ত করুন।',
   pdfSaved:'পিডিএফ সেভ হয়েছে।',pdfSavedShare:'পিডিএফ সেভ হয়েছে। WhatsApp খুলে ফাইলটি সংযুক্ত করুন।',
   pdfFail:'পিডিএফ তৈরি হয়নি। প্রিন্ট থেকে PDF সেভ করতে পারেন।',
-  reportTitle:'ট্রিপ লগ',reportSub:'দৈনিক হিসাব',poweredBy:'Powered by Cloud Craft BD',
+  mileage:'মাইলেজ (কিমি/লি)',expectedFuel:'নির্ধারিত ফুয়েল',givenFuel:'প্রদানকৃত ফুয়েল',variance:'ফুয়েল +/-',duration:'সময় ব্যবধান',totalKm:'মোট কিমি',roundTrip:'রাউন্ড ট্রিপ রুট',updateBtn:'আপডেট করুন',totalDistance:'মোট দূরত্ব',
+  reportTitle:'ট্রিপ লগ',reportSub:'দৈনিক হিসাব',poweredBy:'Powered by Data & Code',
   loading:'ট্রিপ লগ লোড হচ্ছে…',passengerBus:'যাত্রীবাহী বাস',transportMgmt:'পরিবহন ব্যবস্থাপনা',cloudOk:'Lovable Cloud সংযুক্ত',
  },
  en:{
