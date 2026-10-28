@@ -18,16 +18,19 @@ export type Database = {
         Row: {
           allowance: number
           id: boolean
+          mileage: number
           unit_price: number
         }
         Insert: {
           allowance?: number
           id?: boolean
+          mileage?: number
           unit_price?: number
         }
         Update: {
           allowance?: number
           id?: boolean
+          mileage?: number
           unit_price?: number
         }
         Relationships: []
@@ -131,6 +134,7 @@ export type Database = {
           distance: number | null
           id: string
           kind: string
+          mileage: number | null
           name: string
         }
         Insert: {
@@ -139,6 +143,7 @@ export type Database = {
           distance?: number | null
           id?: string
           kind: string
+          mileage?: number | null
           name: string
         }
         Update: {
@@ -147,6 +152,7 @@ export type Database = {
           distance?: number | null
           id?: string
           kind?: string
+          mileage?: number | null
           name?: string
         }
         Relationships: []
