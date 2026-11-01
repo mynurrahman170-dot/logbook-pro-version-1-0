@@ -4,18 +4,18 @@ export const num=(n:number,lang:Lang='bn')=>n.toLocaleString(lang==='bn'?'bn-BD'
 export function today(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Dhaka',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
 export function nowTime(){return new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit'});}
 export function fuelMath(quantity:number,price:number,allowance:number){return {total:quantity*price,excess:quantity-allowance};}
-export function bnDigits(s:string){return s.replace(/[0-9]/g,d=>'০১২৩৪৫৬৭৮৯'[Number(d)]);}
+export function bnDigits(s:string){return s.replace(/[0-9]/g,d=>'০১২৩৪৫৬৭৮৯'[Number(d)]??d);}
 /** Bengali 12-hour colloquial time: ভোর ৪-৬:৫৯, সকাল ৭-১০:৫৯, দুপুর ১১-২:৫৯, বিকাল ৩-৫:৫৯, সন্ধ্যা ৬টা, রাত ৭টা-৩:৫৯. */
 export function bnTime(time:string,lang:Lang='bn'){
  if(!time)return '';
- const [h,m]=time.split(':').map(Number);
+ const [h=0,m=0]=time.split(':').map(Number);
  if(lang==='en')return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
  const period=h>=4&&h<7?'ভোর':h>=7&&h<11?'সকাল':h>=11&&h<15?'দুপুর':h>=15&&h<18?'বিকাল':h===18?'সন্ধ্যা':'রাত';
  const h12=h%12===0?12:h%12;
  return `${period} ${bnDigits(String(h12))}:${bnDigits(String(m).padStart(2,'0'))}`;
 }
 export function durationLabel(upTime:string,downTime:string,lang:Lang='bn'){
- const [uh,um]=upTime.split(':').map(Number),[dh,dm]=downTime.split(':').map(Number);
+ const [uh=0,um=0]=upTime.split(':').map(Number),[dh=0,dm=0]=downTime.split(':').map(Number);
  let m=dh*60+dm-(uh*60+um);if(m<0)m+=1440;
  if(lang==='en')return `${Math.floor(m/60)}h ${m%60}m`;
  return `${bnDigits(String(Math.floor(m/60)))} ঘ ${bnDigits(String(m%60))} মি`;

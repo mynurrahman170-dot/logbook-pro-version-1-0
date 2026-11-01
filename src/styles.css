@@ -88,3 +88,11 @@ td{font-size:11px;padding:10px 12px}
 .lang-toggle button.active{background:var(--card);color:var(--primary);font-weight:600;box-shadow:var(--shadow)}
 
 .master-row .row-action{width:26px;height:26px;padding:0;color:var(--muted-foreground)}.master-row .row-action svg{width:14px;height:14px}.master-row .row-action:first-of-type{margin-left:auto}
+
+.brand .brand-name{font-size:15px;line-height:1.2}
+.trip-badge{margin-left:4px}.badge-pending{background:var(--destructive);color:var(--destructive-foreground);font-weight:600}
+.badge-night{background:var(--accent);color:var(--primary);font-weight:600}.badge-ord2{background:var(--teal-soft);color:var(--teal)}.badge-ord3{background:var(--violet-soft);color:var(--violet)}.badge-matched{background:var(--teal-soft);color:var(--teal)}
+.var-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-variant-numeric:tabular-nums}
+.var-over{background:color-mix(in oklab,var(--destructive) 15%,transparent);color:var(--destructive)}.var-even{background:var(--accent);color:var(--primary)}.var-under{background:color-mix(in oklab,var(--success) 18%,transparent);color:var(--success)}
+.fuel-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fuel-info>div{border:1px solid var(--border);border-radius:6px;padding:8px 10px;background:var(--muted)}.fuel-info small{display:block;font-size:10px;color:var(--muted-foreground)}.fuel-info strong{font-size:13px;white-space:normal}
+[role=dialog]{max-height:90vh;overflow-y:auto}

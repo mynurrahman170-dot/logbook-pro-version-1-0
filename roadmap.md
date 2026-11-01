@@ -6,10 +6,10 @@
 - [x] Bengali dashboard, trip, fuel, master data and staff pages
 - [x] Owner-confirmed master-admin access
 - [x] Same-day reconciliation fixed (unique constraint now includes direction; 21/21 pairs save and match)
- - [ ] Matched-trip fuel linkage and calculations
- - [ ] Mileage-based expected fuel: admin-set মাইলেজ (কিমি/লিটার), নির্ধারিত ফুয়েল = মোট কিমি ÷ মাইলেজ (অটো); ফুয়েল পেইজে দূরত্ব কিমির পাশে মাইলেজ ও নির্ধারিত ফুয়েল কার্ড
- - [ ] সমন্বয় টেবিল (ডাটাবেইজ পেইজে): তারিখ - আপ/ডাউন সময় - সময় ব্যাবধান - গাড়ি - রাউন্ড ট্রিপ রুট - মোট কিমি - নির্ধারিত ফুয়েল - প্রদানকৃত ফুয়েল - মূল্য - ফুয়েল +/- - সুপারভাইজার - ড্রাইভার
- - [ ] Edit/delete controls and counter serial ordering
+ - [x] Matched-trip fuel linkage and calculations
+ - [x] Mileage-based expected fuel: admin-set মাইলেজ (কিমি/লিটার), নির্ধারিত ফুয়েল = মোট কিমি ÷ মাইলেজ (অটো); ফুয়েল পেইজে দূরত্ব কিমির পাশে মাইলেজ ও নির্ধারিত ফুয়েল কার্ড
+ - [x] সমন্বয় টেবিল (ডাটাবেইজ পেইজে): তারিখ - আপ/ডাউন সময় - সময় ব্যাবধান - গাড়ি - রাউন্ড ট্রিপ রুট - মোট কিমি - নির্ধারিত ফুয়েল - প্রদানকৃত ফুয়েল - মূল্য - ফুয়েল +/- - সুপারভাইজার - ড্রাইভার
+ - [x] Edit/delete controls and counter serial ordering
 - [ ] Textured background, colored hierarchy and return-trip terminology
 - [ ] Regression tests and signed-in end-to-end verification
 - [x] Date filters, PDF, print and file sharing controls
