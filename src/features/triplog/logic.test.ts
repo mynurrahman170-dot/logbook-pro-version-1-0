@@ -15,8 +15,16 @@ describe('trip reconciliation',()=>{
  it('does not pair across days without night hold',()=>{const p=pairTrips([r('a','2026-10-20','20:00','up'),r('b','2026-10-21','08:00','down')]);expect(p).toHaveLength(2);});
  it('weekday is derived from date',()=>{expect(weekday('2026-10-20','en')).toBe('Tuesday');});
 });
-import {expectedFuel as ef,variance as vr,bnTime as bt} from './logic';
+import {expectedFuel as ef,variance as vr,bnTime as bt,sortRouteGroups as srg} from './logic';
 import {test as t2,expect as e2} from 'vitest';
 t2('expected fuel = km ÷ mileage',()=>{e2(ef(200,4)).toBe(50);e2(ef(100,0)).toBe(0);});
 t2('variance colors: over red, equal blue, zero litre green negative',()=>{e2(vr(55,50).cls).toBe('var-over');e2(vr(50,50).cls).toBe('var-even');const z=vr(0,50);e2(z.cls).toBe('var-under');e2(z.diff).toBe(-50);});
 t2('bengali 12h periods',()=>{e2(bt('05:30')).toBe('ভোর ৫:৩০');e2(bt('13:05')).toBe('দুপুর ১:০৫');e2(bt('20:00')).toBe('রাত ৮:০০');});
+t2('trip list groups by route, time ascending within group',()=>{
+ const rows=[
+  {id:'1',route_id:'r2',entry_date:'2026-11-01',entry_time:'09:00'},
+  {id:'2',route_id:'r1',entry_date:'2026-11-01',entry_time:'18:00'},
+  {id:'3',route_id:'r1',entry_date:'2026-11-01',entry_time:'07:00'},
+  {id:'4',route_id:'r1',entry_date:'2026-10-31',entry_time:'20:00'}];
+ const out=srg(rows,rid=>rid==='r1'?'Madaripur - Gulistan':'Madaripur - Kadamtali');
+ e2(out.map(x=>x.id)).toEqual(['4','3','2','1']);});
