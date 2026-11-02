@@ -30,6 +30,9 @@ export function variance(given:number,expected:number){
 }
 export function ordinalLabel(n:number,lang:Lang='bn'){if(n===1)return '';if(lang==='en')return n===2?'2nd trip':n===3?'3rd trip':`${n}th trip`;return n===2?'২য় ট্রিপ':n===3?'তৃতীয় ট্রিপ':`${bn(n)}তম ট্রিপ`;}
 export function rankPeople(logs:{supervisor_id:string;driver_id:string}[],key:'supervisor_id'|'driver_id'){const counts=new Map<string,number>();logs.forEach(l=>counts.set(l[key],(counts.get(l[key])??0)+1));return [...counts].map(([id,count])=>({id,count})).sort((a,b)=>b.count-a.count);}
+/** Trip list order: grouped by route — all trips of one route together, each group sorted by date then time ascending. */
+export function sortRouteGroups<T extends{route_id:string|null;entry_date:string;entry_time:string}>(rows:T[],routeName:(id:string|null)=>string):T[]{
+ return [...rows].sort((a,b)=>routeName(a.route_id).localeCompare(routeName(b.route_id))||a.entry_date.localeCompare(b.entry_date)||a.entry_time.localeCompare(b.entry_time));}
 export function pageHead(title:string){const description=`Trip & Fuel Logbook — যাত্রীবাহী বাসের ${title}। Powered by Data & Code.`;return {meta:[{title:`${title} | Trip & Fuel Logbook`},{name:'description',content:description},{property:'og:title',content:`${title} | Trip & Fuel Logbook`},{property:'og:description',content:description},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]};}
 
 export const STR={
