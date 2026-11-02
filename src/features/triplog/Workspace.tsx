@@ -13,7 +13,7 @@ import {supabase} from '@/integrations/supabase/client';
 import {loadWorkspace,createStaff,setStaffActive,updateStaff,editStaff,deleteStaff} from '@/lib/triplog.functions';
 import {useSession} from './session';
 import {useLang} from './lang';
-import {num,today,nowTime,ordinalLabel,rankPeople,fuelMath,weekday,staffPassword,pairTrips,joinRoute,bnTime,durationLabel,expectedFuel,round1,variance,type Lang} from './logic';
+import {num,today,nowTime,ordinalLabel,rankPeople,fuelMath,weekday,staffPassword,pairTrips,joinRoute,bnTime,durationLabel,expectedFuel,round1,variance,sortRouteGroups,type Lang} from './logic';
 import {reportPdf,downloadFile} from './export';
 type Page='dashboard'|'trips'|'fuel'|'database'|'report'|'users';
 type Data=Awaited<ReturnType<typeof loadWorkspace>>;
@@ -27,8 +27,8 @@ export function Workspace({page}:{page:Page}){const session=useSession();const {
 function Connected({page}:{page:Page}){const {data}=useSuspenseQuery(options);return <WorkspaceView page={page} data={data}/>;}
 
 function Picker({label,items,value,onChange}:{label:string;items:Data['master'];value:string;onChange:(v:string)=>void}){
- const {t}=useLang();const [open,setOpen]=useState(false),[q,setQ]=useState('');
- return <div className="field"><label>{label}</label><Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button variant="outline" className="picker" role="combobox">{items.find(i=>i.id===value)?.name??`${label} — ${t.pickPrefix}`}<ChevronDown/></Button></PopoverTrigger><PopoverContent className="p-2"><Input placeholder={t.searchName} value={q} onChange={e=>setQ(e.target.value)}/><div className="max-h-56 overflow-auto mt-2">{items.filter(i=>i.name.toLowerCase().includes(q.toLowerCase())).map(i=><Button key={i.id} variant="ghost" className="w-full justify-between" onClick={()=>{onChange(i.id);setOpen(false);}}>{i.name}{value===i.id&&<Check/>}</Button>)}{!items.length&&<p className="p-3 text-sm text-muted-foreground">{t.addFirst}</p>}</div></PopoverContent></Popover></div>;
+  const {t}=useLang();const [open,setOpen]=useState(false),[q,setQ]=useState('');
+ return <div className="field"><label>{label}</label><Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button variant="outline" className="picker" role="combobox">{items.find(i=>i.id===value)?.name??`${label} — ${t.pickPrefix}`}<ChevronDown/></Button></PopoverTrigger><PopoverContent align="start" className="p-2 w-[min(20rem,calc(100vw-3rem))]"><Input placeholder={t.searchName} value={q} onChange={e=>setQ(e.target.value)}/><div className="picker-list max-h-72 overflow-y-auto overscroll-contain mt-2">{items.filter(i=>i.name.toLowerCase().includes(q.toLowerCase())).map(i=><Button key={i.id} variant="ghost" className="w-full justify-between" onClick={()=>{onChange(i.id);setOpen(false);}}>{i.name}{value===i.id&&<Check/>}</Button>)}{!items.length&&<p className="p-3 text-sm text-muted-foreground">{t.addFirst}</p>}</div></PopoverContent></Popover></div>;
 }
 
 function WorkspaceView({page,data}:{page:Page;data:Data}){
@@ -50,7 +50,9 @@ function WorkspaceView({page,data}:{page:Page;data:Data}){
  const dirLabel=(d:string|null)=>d==='up'?t.up:d==='down'?t.down:'—';
  const name=(id:string)=>data.master.find(x=>x.id===id)?.name??'—';
  const filtered=data.logs.filter(l=>(!start||l.entry_date>=start)&&(!end||l.entry_date<=end)&&(!month||l.entry_date.startsWith(month))&&(!search||[name(l.vehicle_id),name(l.supervisor_id),name(l.driver_id)].some(s=>s.toLowerCase().includes(search.toLowerCase()))));
- const trips=filtered.filter(l=>l.kind==='trip'),fuels=filtered.filter(l=>l.kind==='fuel');const rows=page==='fuel'?fuels:trips;
+ const trips=filtered.filter(l=>l.kind==='trip'),fuels=filtered.filter(l=>l.kind==='fuel');
+ const asc=(a:Data['logs'][number],b:Data['logs'][number])=>a.entry_date.localeCompare(b.entry_date)||a.entry_time.localeCompare(b.entry_time);
+ const rows=page==='fuel'?[...fuels].sort(asc):page==='trips'?sortRouteGroups(trips,id=>md(id)?.name??'—'):[...trips].sort(asc);
  const refresh=()=>queryClient.invalidateQueries({queryKey:['workspace']});
  const requireLogin=()=>{if(!session){setLogin(true);return false;}return true;};
  const newEntry=(kind:'trip'|'fuel')=>{if(!requireLogin())return;setEditLogId(null);setEntry(kind);setDate(today());setTime(nowTime());setVehicle('');setSupervisor('');setDriver('');setQuantity('');setRoute('');setNightHold(false);setDir((counterDir as 'up'|'down')??'up');};
