@@ -29,6 +29,13 @@
       "when": 1793159748289,
       "tag": "0003_mileage_and_edit_fix",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793666054022,
+      "tag": "0004_lov_database_migration",
+      "breakpoints": true
     }
   ]
 }
