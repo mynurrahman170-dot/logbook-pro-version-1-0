@@ -136,6 +136,8 @@ export type Database = {
           kind: string
           mileage: number | null
           name: string
+          priority_order: number | null
+          priority_parent: string | null
         }
         Insert: {
           created_at?: string
@@ -145,6 +147,8 @@ export type Database = {
           kind: string
           mileage?: number | null
           name: string
+          priority_order?: number | null
+          priority_parent?: string | null
         }
         Update: {
           created_at?: string
@@ -154,6 +158,8 @@ export type Database = {
           kind?: string
           mileage?: number | null
           name?: string
+          priority_order?: number | null
+          priority_parent?: string | null
         }
         Relationships: []
       }
