@@ -16,3 +16,4 @@
 - Master admin roles are provisioned out of band for an owner-confirmed email, never by public first-user signup.
 - Writes to log_entries go through add_log, which serializes vehicle/date/kind and requires duplicate confirmation; generated fuel columns preserve entry-time price snapshots.
 - PDF generation rasterizes the Bengali report in the browser; native file sharing is used when available and file download otherwise.
+- Route schedule numbers use the existing `master_data.priority_order` field; trips with the same number share chronological grouping and serials, while legacy unnumbered routes remain name-sorted.
