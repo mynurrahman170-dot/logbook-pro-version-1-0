@@ -14,3 +14,6 @@
 - [ ] Regression tests and signed-in end-to-end verification
 - [x] Date filters, PDF, print and file sharing controls
 - [x] Tests and signed-in trip/fuel entry, duplicate confirmation, reload and PDF download checks
+- [ ] Add route numbers to route setup and order trip schedules by shared route number
+- [ ] Match the 15-column reconciliation table in the web view, print and PDF, including fuel variance in litres and taka
+- [ ] Run route-schedule regression tests and verify the updated screens
