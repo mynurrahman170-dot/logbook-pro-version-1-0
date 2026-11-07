@@ -1,41 +1,5 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1792558674157,
-      "tag": "0000_restore_verified_owner_activation",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1792561927182,
-      "tag": "0001_fix_ordinal_unique_per_direction",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1792951365419,
-      "tag": "0002_create_update_log",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1793159748289,
-      "tag": "0003_mileage_and_edit_fix",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1793666054022,
-      "tag": "0004_lov_database_migration",
-      "breakpoints": true
-    }
-  ]
+  "entries": []
 }

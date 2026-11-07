@@ -1,2 +1,0 @@
-ALTER TABLE public.log_entries DROP CONSTRAINT log_entries_kind_entry_date_vehicle_id_ordinal_key;
-CREATE UNIQUE INDEX log_entries_kind_date_vehicle_dir_ordinal_key ON public.log_entries (kind, entry_date, vehicle_id, COALESCE(direction, ''), ordinal);
