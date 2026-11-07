@@ -28,6 +28,9 @@ export function variance(given:number,expected:number){
  const diff=round1(given-expected);
  return {diff,cls:diff>0?'var-over':diff<0?'var-under':'var-even',sign:diff>0?'+':diff<0?'−':''};
 }
+export function varianceTaka(given:number,expected:number,unitPrice:number){return Math.round((given-expected)*unitPrice*100)/100;}
+export type ReportSums={km:number;expected:number;given:number;amount:number;extraLitres:number;extraTaka:number};
+export function sumReportRows(rows:readonly ReportSums[]):ReportSums{return rows.reduce((sum,row)=>({km:round1(sum.km+row.km),expected:round1(sum.expected+row.expected),given:round1(sum.given+row.given),amount:Math.round((sum.amount+row.amount)*100)/100,extraLitres:round1(sum.extraLitres+row.extraLitres),extraTaka:Math.round((sum.extraTaka+row.extraTaka)*100)/100}),{km:0,expected:0,given:0,amount:0,extraLitres:0,extraTaka:0});}
 export function ordinalLabel(n:number,lang:Lang='bn'){if(n===1)return '';if(lang==='en')return n===2?'2nd trip':n===3?'3rd trip':`${n}th trip`;return n===2?'২য় ট্রিপ':n===3?'তৃতীয় ট্রিপ':`${bn(n)}তম ট্রিপ`;}
 export function rankPeople(logs:{supervisor_id:string;driver_id:string}[],key:'supervisor_id'|'driver_id'){const counts=new Map<string,number>();logs.forEach(l=>counts.set(l[key],(counts.get(l[key])??0)+1));return [...counts].map(([id,count])=>({id,count})).sort((a,b)=>b.count-a.count);}
 /** Schedule order follows route numbers; trips sharing a number use one chronological group. */
