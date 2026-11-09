@@ -8,7 +8,7 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 // On Vercel builds (VERCEL=1 is set automatically), emit Vercel serverless output.
 // Inside Lovable the wrapper always forces cloudflare-module, so this is ignored there.
-const onVercel = !!process.env.VERCEL;
+const onVercel = !!process.env["VERCEL"];
 
 export default defineConfig({
   tanstackStart: {
