@@ -13,7 +13,7 @@ import {supabase} from '@/integrations/supabase/client';
 import {loadWorkspace,createStaff,setStaffActive,updateStaff,editStaff,deleteStaff} from '@/lib/triplog.functions';
 import {useSession} from './session';
 import {useLang} from './lang';
-import {num,today,nowTime,ordinalLabel,rankPeople,fuelMath,weekday,staffPassword,pairTrips,joinRoute,bnTime,durationLabel,expectedFuel,round1,variance,varianceTaka,sumReportRows,sortRouteGroups,type Lang} from './logic';
+import {num,today,nowTime,ordinalLabel,rankPeople,fuelMath,weekday,staffPassword,pairTrips,joinRoute,bnTime,durationLabel,expectedFuel,round1,variance,varianceTaka,sumReportRows,sortRouteGroups,groupSerials,type Lang} from './logic';
 import {reportPdf,downloadFile} from './export';
 type Page='dashboard'|'trips'|'fuel'|'database'|'report'|'users';
 type Data=Awaited<ReturnType<typeof loadWorkspace>>;
@@ -28,7 +28,7 @@ function Connected({page}:{page:Page}){const {data}=useSuspenseQuery(options);re
 
 function Picker({label,items,value,onChange}:{label:string;items:Data['master'];value:string;onChange:(v:string)=>void}){
   const {t}=useLang();const [open,setOpen]=useState(false),[q,setQ]=useState('');
- return <div className="field"><label>{label}</label><Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button variant="outline" className="picker" role="combobox">{items.find(i=>i.id===value)?.name??`${label} — ${t.pickPrefix}`}<ChevronDown/></Button></PopoverTrigger><PopoverContent align="start" className="p-2 w-[min(20rem,calc(100vw-3rem))]"><Input placeholder={t.searchName} value={q} onChange={e=>setQ(e.target.value)}/><div className="picker-list max-h-72 overflow-y-auto overscroll-contain mt-2">{items.filter(i=>i.name.toLowerCase().includes(q.toLowerCase())).map(i=><Button key={i.id} variant="ghost" className="w-full justify-between" onClick={()=>{onChange(i.id);setOpen(false);}}>{i.name}{value===i.id&&<Check/>}</Button>)}{!items.length&&<p className="p-3 text-sm text-muted-foreground">{t.addFirst}</p>}</div></PopoverContent></Popover></div>;
+ return <div className="field"><label>{label}</label><Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><Button variant="outline" className="picker" role="combobox">{items.find(i=>i.id===value)?.name??`${label} — ${t.pickPrefix}`}<ChevronDown/></Button></PopoverTrigger><PopoverContent align="start" className="flex max-h-[calc(100dvh-7rem)] w-[min(20rem,calc(100vw-3rem))] flex-col overflow-hidden p-2"><Input placeholder={t.searchName} value={q} onChange={e=>setQ(e.target.value)}/><div className="picker-list mt-2 min-h-0 max-h-[min(18rem,calc(100dvh-13rem))] touch-pan-y overflow-y-auto overscroll-y-contain pr-1">{items.filter(i=>i.name.toLowerCase().includes(q.toLowerCase())).map(i=><Button key={i.id} variant="ghost" className="w-full justify-between" onClick={()=>{onChange(i.id);setOpen(false);}}>{i.name}{value===i.id&&<Check/>}</Button>)}{!items.length&&<p className="p-3 text-sm text-muted-foreground">{t.addFirst}</p>}</div></PopoverContent></Popover></div>;
 }
 
 function WorkspaceView({page,data}:{page:Page;data:Data}){
@@ -37,7 +37,7 @@ function WorkspaceView({page,data}:{page:Page;data:Data}){
  const [mobile,setMobile]=useState(false),[login,setLogin]=useState(false),[signup,setSignup]=useState(false),[needsConfirmation,setNeedsConfirmation]=useState(false),[identity,setIdentity]=useState(''),[password,setPassword]=useState(''),[busy,setBusy]=useState(false);
  const [start,setStart]=useState(''),[end,setEnd]=useState(''),[month,setMonth]=useState(''),[search,setSearch]=useState(''),[clock,setClock]=useState('—'),[tab,setTab]=useState<'supervisor'|'driver'>('supervisor');
  const [entry,setEntry]=useState<'trip'|'fuel'|null>(null),[date,setDate]=useState(''),[time,setTime]=useState(''),[vehicle,setVehicle]=useState(''),[supervisor,setSupervisor]=useState(''),[driver,setDriver]=useState(''),[quantity,setQuantity]=useState(''),[confirm,setConfirm]=useState(false),[duplicateOrdinal,setDuplicateOrdinal]=useState(2);
- const [masterOpen,setMasterOpen]=useState(false),[masterKind,setMasterKind]=useState('vehicle'),[masterName,setMasterName]=useState(''),[masterEditId,setMasterEditId]=useState<string|null>(null),[staffOpen,setStaffOpen]=useState(false),[staffName,setStaffName]=useState(''),[staffCode,setStaffCode]=useState(''),[staffPin,setStaffPin]=useState(''),[allowance,setAllowance]=useState(''),[price,setPrice]=useState('');
+ const [masterOpen,setMasterOpen]=useState(false),[masterKind,setMasterKind]=useState('vehicle'),[masterName,setMasterName]=useState(''),[masterRouteNo,setMasterRouteNo]=useState(''),[masterEditId,setMasterEditId]=useState<string|null>(null),[staffOpen,setStaffOpen]=useState(false),[staffName,setStaffName]=useState(''),[staffCode,setStaffCode]=useState(''),[staffPin,setStaffPin]=useState(''),[allowance,setAllowance]=useState(''),[price,setPrice]=useState('');
  const [editLogId,setEditLogId]=useState<string|null>(null),[masterMileage,setMasterMileage]=useState(''),[staffEditId,setStaffEditId]=useState<string|null>(null);
  const [printedAt,setPrintedAt]=useState('');const [route,setRoute]=useState(''),[nightHold,setNightHold]=useState(false),[dir,setDir]=useState<'up'|'down'>('up'),[masterDir,setMasterDir]=useState('up'),[masterDist,setMasterDist]=useState(''),[staffAccess,setStaffAccess]=useState<'trip_operator'|'fuel_manager'>('trip_operator'),[staffCounter,setStaffCounter]=useState('');
  const report=useRef<HTMLDivElement>(null);
@@ -52,7 +52,8 @@ function WorkspaceView({page,data}:{page:Page;data:Data}){
  const filtered=data.logs.filter(l=>(!start||l.entry_date>=start)&&(!end||l.entry_date<=end)&&(!month||l.entry_date.startsWith(month))&&(!search||[name(l.vehicle_id),name(l.supervisor_id),name(l.driver_id)].some(s=>s.toLowerCase().includes(search.toLowerCase()))));
  const trips=filtered.filter(l=>l.kind==='trip'),fuels=filtered.filter(l=>l.kind==='fuel');
  const asc=(a:Data['logs'][number],b:Data['logs'][number])=>a.entry_date.localeCompare(b.entry_date)||a.entry_time.localeCompare(b.entry_time);
- const rows=page==='fuel'?[...fuels].sort(asc):page==='trips'?sortRouteGroups(trips,id=>md(id)?.name??'—'):[...trips].sort(asc);
+ const rows=page==='fuel'?[...fuels].sort(asc):page==='trips'?sortRouteGroups(trips,id=>md(id)?.name??'—',id=>md(id)?.priority_order??null):[...trips].sort(asc);
+ const tripSerials=page==='trips'?groupSerials(rows,row=>{const routeNo=md(row.route_id)?.priority_order;return routeNo!==null&&routeNo!==undefined?`number:${routeNo}`:`route:${row.route_id??'unassigned'}`;}):new Map<string,number>();
  const refresh=()=>queryClient.invalidateQueries({queryKey:['workspace']});
  const requireLogin=()=>{if(!session){setLogin(true);return false;}return true;};
  const newEntry=(kind:'trip'|'fuel')=>{if(!requireLogin())return;setEditLogId(null);setEntry(kind);setDate(today());setTime(nowTime());setVehicle('');setSupervisor('');setDriver('');setQuantity('');setRoute('');setNightHold(false);setDir((counterDir as 'up'|'down')??'up');};
@@ -73,7 +74,7 @@ function WorkspaceView({page,data}:{page:Page;data:Data}){
    async function delLog(id:string){if(!window.confirm(t.del+'?'))return;const {error}=await supabase.rpc('delete_log',{p_id:id});if(error)toast.error(t.changeFail);else{refresh();toast.success(t.deleted);}}
  const editLog=(l:Data['logs'][number])=>{if(!requireLogin())return;if(l.kind==='fuel'?!canFuel:!canTrip)return;setEntry(l.kind as 'trip'|'fuel');setEditLogId(l.id);setDate(l.entry_date);setTime(l.entry_time.slice(0,5));setVehicle(l.vehicle_id);setSupervisor(l.supervisor_id);setDriver(l.driver_id);setQuantity(String(l.quantity));setRoute(l.route_id??'');setNightHold(l.night_hold);setDir((l.direction as 'up'|'down')??'up');};
  const openNewStaff=()=>{setStaffEditId(null);setStaffName('');setStaffCode('');setStaffPin('');setStaffAccess('trip_operator');setStaffCounter('');setStaffOpen(true);};
- const editMaster=(m:Data['master'][number])=>{setMasterEditId(m.id);setMasterKind(m.kind);setMasterName(m.name);setMasterDir(m.direction??'up');setMasterDist(m.distance!=null?String(m.distance):'');setMasterMileage(m.mileage!=null?String(m.mileage):'');setMasterOpen(true);};
+ const editMaster=(m:Data['master'][number])=>{setMasterEditId(m.id);setMasterKind(m.kind);setMasterName(m.name);setMasterRouteNo(m.priority_order!=null?String(m.priority_order):'');setMasterDir(m.direction??'up');setMasterDist(m.distance!=null?String(m.distance):'');setMasterMileage(m.mileage!=null?String(m.mileage):'');setMasterOpen(true);};
  async function delMaster(id:string){if(!window.confirm(t.del+'?'))return;const {error}=await supabase.from('master_data').delete().eq('id',id);if(error)toast.error(t.delFail);else{refresh();toast.success(t.deleted);}}
  const rangeText=month?month:`${fmtDate(start,lang)} — ${fmtDate(end,lang)}`;
  const allPairs=pairTrips(data.logs.filter(l=>l.kind==='trip'));
